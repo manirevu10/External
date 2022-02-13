@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <unistd.h>
+#define BUF_SIZE 8192
+int main(int argc, char* argv[]) 
+{
+int fd1, fd2; /* Input and output file descriptors */
+ ssize_t ret_in; /* Number of bytes returned by read()and write() */
+char buffer[BUF_SIZE]; /* Character buffer */
+if(argc != 3){
+printf ("Usage: cp file1 file2");
+return 1;
+ }
+ /* Create input file descriptor */
+ fd1 = open (argv [1], O_RDONLY);
+if (fd1 == -1) {
+perror ("open");
+return 2;
+ }
+ /* Create output file descriptor */
+ fd2 = open(argv[2], O_WRONLY | O_CREAT, 0644);
+if(fd2 == -1){
+perror("open");
+return 3;
+ }
+ /* Copy process */
+while((ret_in = read (fd1, &buffer, BUF_SIZE)) > 0)
+ {
+write (fd2, &buffer, (ssize_t)ret_in);
+      }
+close (fd1);
+close (fd2);
+}
